@@ -60,7 +60,10 @@ class _SignupPageState extends State<SignupPage> {
                 isObscureText: true,
               ),
               const SizedBox(height: 20),
-              const AuthGradientButton(buttonText: 'Sign Up'),
+              AuthGradientButton(
+                buttonText: 'Sign Up',
+                onTap: () {},
+              ),
               const SizedBox(height: 20),
               RichText(
                 text: TextSpan(
