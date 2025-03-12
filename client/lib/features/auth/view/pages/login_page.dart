@@ -58,6 +58,9 @@ class _LoginPageState extends State<LoginPage> {
               AuthGradientButton(
                 buttonText: 'Sign In',
                 onTap: () async {
+                  print("<><><><><><><><><><><><><><><><><><><><><><>");
+                  print(emailController.text);
+                  print(passwordController.text);
                   await AuthRemoteRepository().login(
                       email: emailController.text,
                       password: passwordController.text);

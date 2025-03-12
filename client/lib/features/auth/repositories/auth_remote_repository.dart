@@ -27,11 +27,12 @@ class AuthRemoteRepository {
       );
       if (response.statusCode != 201) {
         print('Error: ${response.statusCode} - ${response.body}');
-        throw {};
+        throw '';
       }
-      final user = jsonDecode(response.body) as Map<String, String>;
-      return user;
+      final Map<String, dynamic> userMap = jsonDecode(response.body);
+      return userMap.map((key, value) => MapEntry(key, value.toString()));
     } catch (e) {
+      print(e);
       throw '';
     }
   }
@@ -55,6 +56,7 @@ class AuthRemoteRepository {
       print(response.body);
       print(response.statusCode);
     } catch (e) {
+      print(e);
       throw '';
     }
   }
