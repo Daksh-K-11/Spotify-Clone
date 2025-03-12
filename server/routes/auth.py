@@ -17,7 +17,7 @@ def signup_user(user: UserCreate, db: Session=Depends(get_db)):
         raise HTTPException(400, 'User with the same email already exists!')
     
     hashed_pwd = bcrypt.hashpw(user.password.encode(), bcrypt.gensalt())
-    user_db = User(id=str(uuid.uuid4()), email=user.email, password=hashed_pwd, name=user.password)
+    user_db = User(id=str(uuid.uuid4()), email=user.email, password=hashed_pwd, name=user.name)
     
     db.add(user_db)
     db.commit()

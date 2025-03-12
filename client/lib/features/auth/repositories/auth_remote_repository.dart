@@ -10,7 +10,7 @@ class AuthRemoteRepository {
   }) async {
     final response = await http.post(
       Uri.parse(
-        "http://192.168.29.115:8000/auth/signup",
+        "http://192.168.103.228:8000/auth/signup",
       ),
       headers: {
         'Content-Type': 'application/json',
@@ -28,6 +28,21 @@ class AuthRemoteRepository {
   }
 
   Future<void> login({required String email, required String password}) async {
-    
+    final response = await http.post(
+      Uri.parse(
+        "http://192.168.103.228:8000/auth/login",
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(
+        {
+          'email': email,
+          'password': password,
+        },
+      ),
+    );
+    print(response.body);
+    print(response.statusCode);
   }
 }
