@@ -3,8 +3,7 @@ from sqlalchemy.orm import sessionmaker
 import urllib.parse
 
 
-database_password = urllib.parse.quote_plus('Chennai@05')
-DATABASE_URL = f"postgresql://postgres:{database_password}@localhost:5432/musicapp"
+#db details
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit = False, autoflush=False, bind=engine)
