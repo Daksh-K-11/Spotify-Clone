@@ -25,7 +25,7 @@ def signup_user(user: UserCreate, db: Session=Depends(get_db)):
     return (user_db)
     
 
-@router.post('/login', status_code=201)
+@router.post('/login', status_code=200)
 def login_user(user: UserLogin, db: Session=Depends(get_db)):
     
     user_db = db.query(User).filter(User.email == user.email).first()
