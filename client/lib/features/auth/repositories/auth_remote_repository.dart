@@ -71,10 +71,11 @@ class AuthRemoteRepository {
           jsonDecode(response.body) as Map<String, dynamic>;
 
       if (response.statusCode != 200) {
-        return Left(AppFailure(message: resBodyMap['detial']));
+        return Left(AppFailure(message: resBodyMap['detail']));
       }
 
-      return Right(UserModel.fromMap(resBodyMap));
+      return Right(UserModel.fromMap(resBodyMap['user'])
+          .copyWith(token: resBodyMap['token']));
     } catch (e) {
       return Left(AppFailure(message: e.toString()));
     }
