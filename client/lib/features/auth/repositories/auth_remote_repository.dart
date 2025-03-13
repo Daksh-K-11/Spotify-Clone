@@ -80,4 +80,29 @@ class AuthRemoteRepository {
       return Left(AppFailure(message: e.toString()));
     }
   }
+
+  Future<Either<AppFailure, UserModel>> getCurrentUserData(String token) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          "${ServerConstants.serverURL}/auth/",
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+      );
+      final Map<String, dynamic> resBodyMap =
+          jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(AppFailure(message: resBodyMap['detail']));
+      }
+
+      return Right(UserModel.fromMap(resBodyMap)
+          .copyWith(token: token));
+    } catch (e) {
+      return Left(AppFailure(message: e.toString()));
+    }
+  }
 }
