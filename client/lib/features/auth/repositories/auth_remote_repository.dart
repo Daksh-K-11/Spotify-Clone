@@ -29,19 +29,20 @@ class AuthRemoteRepository {
           },
         ),
       );
-      final Map<String, dynamic> resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
+      final Map<String, dynamic> resBodyMap =
+          jsonDecode(response.body) as Map<String, dynamic>;
 
       if (response.statusCode != 201) {
         return Left(AppFailure(message: resBodyMap['detail']));
       }
       return Right(UserModel.fromMap(resBodyMap));
-
     } catch (e) {
       return Left(AppFailure(message: e.toString()));
     }
   }
 
-  Future<void> login({required String email, required String password}) async {
+  Future<Either<AppFailure, UserModel>> login(
+      {required String email, required String password}) async {
     try {
       final response = await http.post(
         Uri.parse(
@@ -57,11 +58,16 @@ class AuthRemoteRepository {
           },
         ),
       );
-      print(response.body);
-      print(response.statusCode);
+      final Map<String, dynamic> resBodyMap =
+          jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(AppFailure(message: resBodyMap['detial']));
+      }
+
+      return Right(UserModel.fromMap(resBodyMap));
     } catch (e) {
-      print(e);
-      throw '';
+      return Left(AppFailure(message: e.toString()));
     }
   }
 }

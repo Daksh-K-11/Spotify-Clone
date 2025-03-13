@@ -76,8 +76,6 @@ class _SignupPageState extends State<SignupPage> {
                     Left(value: final l) => l,
                     Right(value: final r) => r
                   };
-                  print("<><><> <><><><><><><><><><><><><><><><><><><><>");
-                  print(val);
                 },
               ),
               const SizedBox(height: 20),
