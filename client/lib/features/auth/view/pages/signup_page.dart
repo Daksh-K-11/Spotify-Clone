@@ -40,7 +40,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
         next?.when(
           data: (data) {
             showSnackBar(
-                context, 'Account created successfully! Please login', false);
+                context, 'Account created successfully! Please login', true);
             Navigator.push(context,
                 MaterialPageRoute(builder: (ctx) => const LoginPage()));
           },
