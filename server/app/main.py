@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from routes import auth
-from models.base import Base
-from database import engine
+from .routes import auth
+from .models.base import Base
+from .database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
 
