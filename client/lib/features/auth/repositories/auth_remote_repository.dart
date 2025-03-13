@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:client/features/auth/model/user_model.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../core/failure/failure.dart';
+
 class AuthRemoteRepository {
-  Future<Map<String, String>> signup({
+  Future<Either<AppFailure, UserModel>> signup({
     required String name,
     required String email,
     required String password,
@@ -12,7 +16,7 @@ class AuthRemoteRepository {
     try {
       final response = await http.post(
         Uri.parse(
-          "http://192.168.103.228:8000/auth/signup",
+          "http://192.168.29.115:8000/auth/signup",
         ),
         headers: {
           'Content-Type': 'application/json',
@@ -25,15 +29,15 @@ class AuthRemoteRepository {
           },
         ),
       );
+      final Map<String, dynamic> resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
+
       if (response.statusCode != 201) {
-        print('Error: ${response.statusCode} - ${response.body}');
-        throw '';
+        return Left(AppFailure(message: resBodyMap['detail']));
       }
-      final Map<String, dynamic> userMap = jsonDecode(response.body);
-      return userMap.map((key, value) => MapEntry(key, value.toString()));
+      return Right(UserModel.fromMap(resBodyMap));
+
     } catch (e) {
-      print(e);
-      throw '';
+      return Left(AppFailure(message: e.toString()));
     }
   }
 
@@ -41,7 +45,7 @@ class AuthRemoteRepository {
     try {
       final response = await http.post(
         Uri.parse(
-          "http://192.168.103.228:8000/auth/login",
+          "http://192.168.29.115:8000/auth/login",
         ),
         headers: {
           'Content-Type': 'application/json',
