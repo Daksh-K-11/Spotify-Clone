@@ -2,11 +2,24 @@ import 'dart:io';
 
 import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/core/utils.dart';
+import 'package:client/features/home/model/song_model.dart';
 import 'package:client/features/home/repositories/home_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'home_viewmodel.g.dart';
+
+@riverpod
+Future<List<SongModel>> getAllSongs(GetAllSongsRef ref) async {
+  final token = ref.watch(currentUserNotifierProvider)!.token;
+  final response =
+      await ref.watch(homeRepositoryProvider).getAllSongs(token: token);
+
+  return switch(response) {
+    Left(value: final l) => throw l.message,
+    Right(value: final r) => r,
+  };
+}
 
 @riverpod
 class HomeViewModel extends _$HomeViewModel {
@@ -35,7 +48,8 @@ class HomeViewModel extends _$HomeViewModel {
     );
 
     final val = switch (res) {
-      Left(value: final l) => state = AsyncValue.error(l.message, StackTrace.current),
+      Left(value: final l) => state =
+          AsyncValue.error(l.message, StackTrace.current),
       Right(value: final r) => state = AsyncValue.data(r),
     };
     print(val);
