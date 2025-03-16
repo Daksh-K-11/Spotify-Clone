@@ -9,6 +9,8 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserNotifierProvider);
     print(user);
-    return const Scaffold();
+    return const Scaffold(
+      // bottomNavigationBar: ,
+    );
   }
 }

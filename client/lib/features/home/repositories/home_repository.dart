@@ -1,37 +1,59 @@
 import 'dart:io';
-
 import 'package:client/core/constants/server_constants.dart';
+import 'package:client/core/failure/failure.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'home_repository.g.dart';
+
+@riverpod
+HomeRepository homeRepository(HomeRepositoryRef ref) {
+  return HomeRepository();
+}
 
 class HomeRepository {
-  Future<void> uploadSong(File selectedImage, File selectedAudio) async {
-    final request = http.MultipartRequest(
-        'POST', Uri.parse('${ServerConstants.serverURL}/song/upload'));
+  Future<Either<AppFailure, String>> uploadSong({
+    required File selectedAudio,
+    required File selectedThumbnail,
+    required String songName,
+    required String artist,
+    required String hexCode,
+    required String token
+  }) async {
+    try {
+      final request = http.MultipartRequest(
+          'POST', Uri.parse('${ServerConstants.serverURL}/song/upload'));
 
-    request
-      ..files.addAll(
-        [
-          await http.MultipartFile.fromPath(
-              'thumbnail', selectedImage.path),
-          await http.MultipartFile.fromPath('song',
-              selectedAudio.path),
-        ],
-      )
-      ..fields.addAll(
-        {
-          'artist': 'Arijit Singh',
-          'song_name': 'Kesariya Brahmastra',
-          'hex_code': 'FFFFFF'
-        },
-      )
-      ..headers.addAll(
-        {
-          'x-auth-token':
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc4YzU5ODVjLTRhOWUtNDg3YS04M2Y4LTgwODVmNDU4NDQ0MyJ9.xHG_fWuyMFoL9xV8EY3NqAw42hfuT15AOa2k09yu1Ho'
-        },
+      request
+        ..files.addAll(
+          [
+            await http.MultipartFile.fromPath('thumbnail', selectedThumbnail.path),
+            await http.MultipartFile.fromPath('song', selectedAudio.path),
+          ],
+        )
+        ..fields.addAll(
+          {
+            'artist': artist,
+            'song_name': songName,
+            'hex_code': hexCode,
+          },
+        )
+        ..headers.addAll(
+          {
+            'x-auth-token': token,
+          },
+        );
+
+      final res = await request.send();
+
+      if (res.statusCode != 201) {
+        return Left(AppFailure(message: await res.stream.bytesToString()));
+      }
+      return Right(
+        await res.stream.bytesToString(),
       );
-
-    final res = await request.send();
-    print(res);
+    } catch (e) {
+      return Left(AppFailure(message: e.toString()));
+    }
   }
 }
