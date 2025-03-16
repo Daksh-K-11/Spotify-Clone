@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSAppleMusicDescription</key>
+	<string>Explain why your app uses music</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Explain why your app uses photo library</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Add your own description.</string>
 </dict>
 </plist>
