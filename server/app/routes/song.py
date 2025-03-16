@@ -12,7 +12,7 @@ router = APIRouter()
 cloudinary.config( 
     cloud_name = "dqtwcntwg", 
     api_key = "636192642438798", 
-    api_secret = settings.cloudinary_api_key,
+    api_secret = settings.cloudinary_api_secret,
     secure=True
 )
 
@@ -27,7 +27,7 @@ def upload_song(song: UploadFile = File(...),
                 ):
     song_id = str(uuid.uuid4())
     song_res = cloudinary.uploader.upload(song.file, resource_type='auto', folder=f'songs/{song_id}')
-    print(song_res)
+    print(song_res['url'])
     thumbnail_res = cloudinary.uploader.upload(thumbnail.file, resource_type='image', folder=f'songs/{song_id}')
-    print(thumbnail_res)
+    print(thumbnail_res['url'])
     return 'ok'

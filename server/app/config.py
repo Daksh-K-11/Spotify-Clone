@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     database_username: str
     secret_key: str
     algorithm: str
-    cloudinary_api_key: str
+    cloudinary_api_secret: str
 
     class Config:
         env_file = ".env"
