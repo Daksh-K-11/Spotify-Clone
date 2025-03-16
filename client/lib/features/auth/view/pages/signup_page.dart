@@ -27,13 +27,15 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
-    formKey.currentState!.validate();
+    if (formKey.currentState != null) {
+      formKey.currentState!.validate();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLoading =
-        ref.watch(authViewModelProvider.select((val) => val?.isLoading == true));
+    final isLoading = ref
+        .watch(authViewModelProvider.select((val) => val?.isLoading == true));
 
     ref.listen(
       authViewModelProvider,
