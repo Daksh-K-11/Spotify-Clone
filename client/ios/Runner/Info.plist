@@ -51,5 +51,10 @@
 	<string>Explain why your app uses photo library</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Add your own description.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>
