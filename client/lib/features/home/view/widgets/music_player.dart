@@ -128,8 +128,7 @@ class MusicPlayer extends ConsumerWidget {
                         }
                         return Column(
                           children: [
-                            StatefulBuilder(builder:
-                                (BuildContext context, StateSetter setState) {
+                            StatefulBuilder(builder: (context, setState) {
                               return SliderTheme(
                                 data: SliderTheme.of(context).copyWith(
                                   activeTrackColor: Pallete.whiteColor,
