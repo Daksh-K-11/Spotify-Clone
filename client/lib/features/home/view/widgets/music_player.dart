@@ -113,68 +113,23 @@ class MusicPlayer extends ConsumerWidget {
                   ),
                   const SizedBox(height: 15),
                   StreamBuilder(
-                      stream: songNotifier.audioPlayer!.positionStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const SizedBox();
-                        }
-                        final position = snapshot.data;
-                        final duration = songNotifier.audioPlayer!.duration;
-                        double sliderValue = 0.0;
-                        if (position != null && duration != null) {
-                          sliderValue =
-                              position.inMilliseconds / duration.inMilliseconds;
-                        }
-                        return Column(
-                          children: [
-                            StatefulBuilder(builder: (context, setState) {
-                              return SliderTheme(
-                                data: SliderTheme.of(context).copyWith(
-                                  activeTrackColor: Pallete.whiteColor,
-                                  inactiveTrackColor:
-                                      Pallete.whiteColor.withOpacity(0.117),
-                                  thumbColor: Pallete.whiteColor,
-                                  trackHeight: 4,
-                                  overlayShape: SliderComponentShape.noOverlay,
-                                ),
-                                child: Slider(
-                                  value: sliderValue,
-                                  min: 0,
-                                  max: 1,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      sliderValue = val;
-                                    });
-                                  },
-                                  onChangeEnd: songNotifier.seek,
-                                ),
-                              );
-                            }),
-                            Row(
-                              children: [
-                                Text(
-                                  "${position?.inMinutes}:${position?.inSeconds}",
-                                  style: const TextStyle(
-                                    color: Pallete.subtitleText,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                                const Expanded(child: SizedBox()),
-                                Text(
-                                  "${duration?.inMinutes}:${duration?.inSeconds}",
-                                  style: const TextStyle(
-                                    color: Pallete.subtitleText,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      }),
+                    stream: songNotifier.audioPlayer!.positionStream,
+                    builder: (context, snapshot) {
+                      final position = snapshot.data ?? Duration.zero;
+                      final duration =
+                          songNotifier.audioPlayer!.duration ?? Duration.zero;
+
+                      double streamSliderValue = duration.inMilliseconds > 0
+                          ? position.inMilliseconds / duration.inMilliseconds
+                          : 0.0;
+
+                      return _SliderWithTime(
+                        initialSliderValue: streamSliderValue,
+                        duration: duration,
+                        onSeek: songNotifier.seek,
+                      );
+                    },
+                  ),
                   const SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -245,6 +200,102 @@ class MusicPlayer extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SliderWithTime extends StatefulWidget {
+  final double initialSliderValue;
+  final Duration duration;
+  final Function(double) onSeek;
+
+  const _SliderWithTime({
+    required this.initialSliderValue,
+    required this.duration,
+    required this.onSeek,
+  });
+
+  @override
+  _SliderWithTimeState createState() => _SliderWithTimeState();
+}
+
+class _SliderWithTimeState extends State<_SliderWithTime> {
+  late double sliderValue;
+  bool isDragging = false;
+
+  @override
+  void initState() {
+    sliderValue = widget.initialSliderValue;
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant _SliderWithTime oldWidget) {
+    if (!isDragging) {
+      sliderValue = widget.initialSliderValue;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final displayedPosition = Duration(
+        milliseconds: (widget.duration.inMilliseconds * sliderValue).round());
+
+    return Column(
+      children: [
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: Pallete.whiteColor,
+            inactiveTrackColor: Pallete.whiteColor.withOpacity(0.117),
+            thumbColor: Pallete.whiteColor,
+            trackHeight: 4,
+            overlayShape: SliderComponentShape.noOverlay,
+          ),
+          child: Slider(
+            value: sliderValue,
+            min: 0,
+            max: 1,
+            onChangeStart: (val) {
+              setState(() {
+                isDragging = true;
+              });
+            },
+            onChanged: (val) {
+              setState(() {
+                sliderValue = val;
+              });
+            },
+            onChangeEnd: (val) {
+              setState(() {
+                isDragging = false;
+              });
+              widget.onSeek(val);
+            },
+          ),
+        ),
+        Row(
+          children: [
+            Text(
+              formatDuration(displayedPosition),
+              style: const TextStyle(
+                color: Pallete.subtitleText,
+                fontSize: 13,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            const Expanded(child: SizedBox()),
+            Text(
+              formatDuration(widget.duration),
+              style: const TextStyle(
+                color: Pallete.subtitleText,
+                fontSize: 13,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
