@@ -112,107 +112,132 @@ class MusicPlayer extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 15),
-                  Column(
+                  StreamBuilder(
+                      stream: songNotifier.audioPlayer!.positionStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox();
+                        }
+                        final position = snapshot.data;
+                        final duration = songNotifier.audioPlayer!.duration;
+                        double sliderValue = 0.0;
+                        if (position != null && duration != null) {
+                          sliderValue =
+                              position.inMilliseconds / duration.inMilliseconds;
+                        }
+                        return Column(
+                          children: [
+                            StatefulBuilder(builder:
+                                (BuildContext context, StateSetter setState) {
+                              return SliderTheme(
+                                data: SliderTheme.of(context).copyWith(
+                                  activeTrackColor: Pallete.whiteColor,
+                                  inactiveTrackColor:
+                                      Pallete.whiteColor.withOpacity(0.117),
+                                  thumbColor: Pallete.whiteColor,
+                                  trackHeight: 4,
+                                  overlayShape: SliderComponentShape.noOverlay,
+                                ),
+                                child: Slider(
+                                  value: sliderValue,
+                                  min: 0,
+                                  max: 1,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      sliderValue = val;
+                                    });
+                                  },
+                                  onChangeEnd: songNotifier.seek,
+                                ),
+                              );
+                            }),
+                            Row(
+                              children: [
+                                Text(
+                                  "${position?.inMinutes}:${position?.inSeconds}",
+                                  style: const TextStyle(
+                                    color: Pallete.subtitleText,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                                const Expanded(child: SizedBox()),
+                                Text(
+                                  "${duration?.inMinutes}:${duration?.inSeconds}",
+                                  style: const TextStyle(
+                                    color: Pallete.subtitleText,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      }),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SliderTheme(
-                        data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: Pallete.whiteColor,
-                          inactiveTrackColor:
-                              Pallete.whiteColor.withOpacity(0.117),
-                          thumbColor: Pallete.whiteColor,
-                          trackHeight: 4,
-                          overlayShape: SliderComponentShape.noOverlay,
-                        ),
-                        child: Slider(
-                          value: 0.5,
-                          onChanged: (val) {},
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Image.asset(
+                          'assets/images/shuffle.png',
+                          color: Pallete.whiteColor,
                         ),
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            '0:05',
-                            style: TextStyle(
-                              color: Pallete.subtitleText,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          const Expanded(child: SizedBox()),
-                          Text(
-                            '0:10',
-                            style: TextStyle(
-                              color: Pallete.subtitleText,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Image.asset(
+                          'assets/images/previus-song.png',
+                          color: Pallete.whiteColor,
+                        ),
                       ),
-                      const SizedBox(height: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Image.asset(
-                              'assets/images/shuffle.png',
-                              color: Pallete.whiteColor,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Image.asset(
-                              'assets/images/previus-song.png',
-                              color: Pallete.whiteColor,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: songNotifier.playPause,
-                            icon: Icon(
-                              songNotifier.isPlaying
-                                  ? CupertinoIcons.pause_circle_fill
-                                  : CupertinoIcons.play_circle_fill,
-                            ),
-                            iconSize: 80,
-                            color: Pallete.whiteColor,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Image.asset(
-                              'assets/images/next-song.png',
-                              color: Pallete.whiteColor,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Image.asset(
-                              'assets/images/repeat.png',
-                              color: Pallete.whiteColor,
-                            ),
-                          ),
-                        ],
+                      IconButton(
+                        onPressed: songNotifier.playPause,
+                        icon: Icon(
+                          songNotifier.isPlaying
+                              ? CupertinoIcons.pause_circle_fill
+                              : CupertinoIcons.play_circle_fill,
+                        ),
+                        iconSize: 80,
+                        color: Pallete.whiteColor,
                       ),
-                      const SizedBox(height: 15),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Image.asset(
-                              'assets/images/connect-device.png',
-                              color: Pallete.whiteColor,
-                            ),
-                          ),
-                          const Expanded(child: SizedBox()),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Image.asset(
-                              'assets/images/playlist.png',
-                              color: Pallete.whiteColor,
-                            ),
-                          ),
-                        ],
-                      )
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Image.asset(
+                          'assets/images/next-song.png',
+                          color: Pallete.whiteColor,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Image.asset(
+                          'assets/images/repeat.png',
+                          color: Pallete.whiteColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Image.asset(
+                          'assets/images/connect-device.png',
+                          color: Pallete.whiteColor,
+                        ),
+                      ),
+                      const Expanded(child: SizedBox()),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Image.asset(
+                          'assets/images/playlist.png',
+                          color: Pallete.whiteColor,
+                        ),
+                      ),
                     ],
                   ),
                 ],
