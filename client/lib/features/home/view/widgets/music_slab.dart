@@ -21,8 +21,25 @@ class MusicSlab extends ConsumerWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (ctx) => const MusicPlayer(),
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return const MusicPlayer();
+            },
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              final tween = Tween(
+                begin: const Offset(0, 1),
+                end: const Offset(0, 0),
+              ).chain(
+                CurveTween(
+                  curve: Curves.easeIn,
+                ),
+              );
+
+              final offsetAnimation = animation.drive(tween);
+
+              return SlideTransition(position: offsetAnimation, child: child);
+            },
           ),
         );
       },
@@ -41,16 +58,19 @@ class MusicSlab extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 48,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                            currentSong.thumbnail_url,
+                    Hero(
+                      tag: 'music-image',
+                      child: Container(
+                        width: 48,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                              currentSong.thumbnail_url,
+                            ),
                           ),
+                          borderRadius: BorderRadius.circular(4),
                         ),
-                        borderRadius: BorderRadius.circular(4),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -58,17 +78,23 @@ class MusicSlab extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          currentSong.song_name,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w500),
+                        Hero(
+                          tag: 'song-name',
+                          child: Text(
+                            currentSong.song_name,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
                         ),
-                        Text(
-                          currentSong.artist,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Pallete.subtitleText,
+                        Hero(
+                          tag: 'song-artist',
+                          child: Text(
+                            currentSong.artist,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Pallete.subtitleText,
+                            ),
                           ),
                         ),
                       ],

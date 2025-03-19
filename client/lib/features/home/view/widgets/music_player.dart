@@ -29,11 +29,19 @@ class MusicPlayer extends ConsumerWidget {
           backgroundColor: Pallete.transparentColor,
           leading: Transform.translate(
             offset: const Offset(-15, 0),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Image.asset(
-                'assets/images/pull-down-arrow.png',
-                color: Pallete.whiteColor,
+            child: InkWell(
+              highlightColor: Pallete.transparentColor,
+              focusColor: Pallete.transparentColor,
+              splashColor: Pallete.transparentColor,
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Image.asset(
+                  'assets/images/pull-down-arrow.png',
+                  color: Pallete.whiteColor,
+                ),
               ),
             ),
           ),
@@ -42,16 +50,19 @@ class MusicPlayer extends ConsumerWidget {
           children: [
             Expanded(
               flex: 5,
-              child: Container(
-                margin: const EdgeInsets.symmetric(
-                  vertical: 30,
-                ),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(currentSong!.thumbnail_url),
-                    fit: BoxFit.cover,
+              child: Hero(
+                tag: 'music-image',
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 30,
                   ),
-                  borderRadius: BorderRadius.circular(10),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(currentSong.thumbnail_url),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
             ),
@@ -64,20 +75,26 @@ class MusicPlayer extends ConsumerWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            currentSong.song_name,
-                            style: const TextStyle(
-                              color: Pallete.whiteColor,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
+                          Hero(
+                            tag: 'song-name',
+                            child: Text(
+                              currentSong.song_name,
+                              style: const TextStyle(
+                                color: Pallete.whiteColor,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
-                          Text(
-                            currentSong.artist,
-                            style: const TextStyle(
-                              color: Pallete.subtitleText,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                          Hero(
+                            tag: 'song-artist',
+                            child: Text(
+                              currentSong.artist,
+                              style: const TextStyle(
+                                color: Pallete.subtitleText,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ],

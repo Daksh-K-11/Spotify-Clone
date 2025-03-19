@@ -30,7 +30,7 @@ class SongsPage extends ConsumerWidget {
                       itemCount: songs.length,
                       itemBuilder: (context, index) {
                         final song = songs[index];
-                        return InkWell(
+                        return GestureDetector(
                           onTap: () {
                             ref
                                 .read(currentSongNotifierProvider.notifier)
