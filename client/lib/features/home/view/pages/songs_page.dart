@@ -10,10 +10,74 @@ class SongsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final recentlyPlayedSongs =
+        ref.watch(homeViewModelProvider.notifier).getRecentlyPlayedSongs();
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 32),
+            child: SizedBox(
+              height: 280,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
+                  childAspectRatio: 3,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
+                itemCount: recentlyPlayedSongs.length,
+                itemBuilder: (context, index) {
+                  final song = recentlyPlayedSongs[index];
+                  return GestureDetector(
+                    onTap: () {
+                      ref
+                          .read(currentSongNotifierProvider.notifier)
+                          .updateSong(song);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Pallete.borderColor,
+                          borderRadius: BorderRadius.circular(6)),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(right: 20),
+                            width: 56,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                  song.thumbnail_url,
+                                ),
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                bottomLeft: Radius.circular(4),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              song.song_name,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(
@@ -34,7 +98,7 @@ class SongsPage extends ConsumerWidget {
                           onTap: () {
                             ref
                                 .read(currentSongNotifierProvider.notifier)
-                                .updatesong(song);
+                                .updateSong(song);
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 16),

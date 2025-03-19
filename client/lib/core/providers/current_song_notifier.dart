@@ -17,7 +17,8 @@ class CurrentSongNotifier extends _$CurrentSongNotifier {
     null;
   }
 
-  void updatesong(SongModel song) async {
+  void updateSong(SongModel song) async {
+    await audioPlayer?.stop();
     audioPlayer = AudioPlayer();
 
     final audioSource = AudioSource.uri(

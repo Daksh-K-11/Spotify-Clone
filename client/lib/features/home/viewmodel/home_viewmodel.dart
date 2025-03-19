@@ -59,7 +59,7 @@ class HomeViewModel extends _$HomeViewModel {
     print(val);
   }
 
-  List<SongModel> getRecentlyPlayedSong() {
+  List<SongModel> getRecentlyPlayedSongs() {
     return _homeLocalRepository.loadSongs();
   }
 }
