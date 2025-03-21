@@ -1,6 +1,9 @@
+import 'package:client/core/providers/current_song_notifier.dart';
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/core/widgets/loader.dart';
+import 'package:client/features/home/view/pages/upload_song_page.dart';
 import 'package:client/features/home/viewmodel/home_viewmodel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,10 +15,36 @@ class LibraryPage extends ConsumerWidget {
     return ref.watch(getFavSongsProvider).when(
           data: (data) {
             return ListView.builder(
-              itemCount: data.length,
+              itemCount: data.length + 1,
               itemBuilder: (context, index) {
+                if (index == data.length) {
+                  return ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (ctx) => const UploadSongPage()));
+                    },
+                    leading: const CircleAvatar(
+                      backgroundColor: Pallete.backgroundColor,
+                      child: Icon(CupertinoIcons.plus),
+                    ),
+                    title: const Text(
+                      'Upload New Song',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  );
+                }
                 final song = data[index];
                 return ListTile(
+                  onTap: () {
+                    ref
+                        .read(currentSongNotifierProvider.notifier)
+                        .updateSong(song);
+                  },
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(song.thumbnail_url),
                     radius: 35,
