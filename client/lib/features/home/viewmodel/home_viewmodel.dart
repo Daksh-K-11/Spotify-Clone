@@ -23,6 +23,19 @@ Future<List<SongModel>> getAllSongs(GetAllSongsRef ref) async {
 }
 
 @riverpod
+Future<List<SongModel>> getFavSongs(GetFavSongsRef ref) async {
+  final token = ref.watch(currentUserNotifierProvider)!.token;
+  final response =
+      await ref.watch(homeRepositoryProvider).getFavSongs(token: token);
+
+  return switch (response) {
+    Left(value: final l) => throw l.message,
+    Right(value: final r) => r,
+  };
+}
+
+
+@riverpod
 class HomeViewModel extends _$HomeViewModel {
   late HomeRepository _homeRepository;
   late HomeLocalRepository _homeLocalRepository;
