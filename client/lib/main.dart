@@ -21,7 +21,7 @@ void main() async {
 
   final container = ProviderContainer();
   await container.read(authViewModelProvider.notifier).initSharedPreferences();
-  container.read(authViewModelProvider.notifier).getData();
+  await container.read(authViewModelProvider.notifier).getData();
   runApp(
     UncontrolledProviderScope(
       container: container,
