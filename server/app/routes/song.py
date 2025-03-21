@@ -52,7 +52,7 @@ def list_songs(db: Session=Depends(get_db), auth_details = Depends(auth_middlewa
     songs = db.query(Song).all()
     return songs
 
-@router.post('/favorite')
+@router.post('/favorite', status_code=201)
 def favorite_song(song: FavoriteSong, db: Session=Depends(get_db), auth_details = Depends(auth_middleware)):
     
     user_id = auth_details['uid']
